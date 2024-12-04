@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  avatar        String?
+  viewName      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  trips         Trip[]    @relation("TripParticipants")
+  expenses      Expense[]
+}
+
+model Trip {
+  id           String     @id @default(cuid())
+  name         String
+  description  String?
+  startDate    DateTime
+  endDate      DateTime?
+  roomCode     String     @unique
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  participants User[]     @relation("TripParticipants")
+  expenses     Expense[]
+  timeline     Timeline[] @relation
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  title     String
+  amount    Float
+  date      DateTime
+  notes     String?
+  category  String?
+  doc       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  tripId    String
+  user      User     @relation(fields: [userId], references: [id])
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model Timeline {
+  id        String   @id @default(cuid())
+  message   Json
+  createdAt DateTime @default(now())
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  tripId    String
+}
+
+model ChatLog {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  context   Json
+  prompt    String
+  botReply  String
+  timestamp DateTime @default(now())
+}
+
+model Dump {
+  id          String @id @default(cuid())
+  tripDetails Json?
+}
