@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 import { TripTimeline } from '@/components/trip/trip-timeline';
 import { ChatWindow } from '@/components/chat/ChatWindow';
 
+const ENABLE_CHATBOT = process.env.NEXT_PUBLIC_ENABLE_CHATBOT === "true";
+
 export default function TripPage() {
   const [chartView, setChartView] = useState<'daily' | 'category'>('daily');
   const [trip, setTrip] = useState<any>();
@@ -55,7 +57,6 @@ export default function TripPage() {
       const ws = new WebSocket(url);
 
       ws.onopen = () => {
-        console.log("EVENT SERVER CONNECTED!")
       };
 
       ws.onmessage = (event) => {
@@ -95,8 +96,7 @@ export default function TripPage() {
       </div>
     );
   }
-  
-  console.log(trip)
+
   return (
     <div className='space-y-8'>
       <TripHeader
@@ -120,7 +120,7 @@ export default function TripPage() {
       <ExpenseChart expenses={trip?.expenses} view={chartView} onViewChange={setChartView} />
       <Settlements settlements={trip?.settlements} />
       <TripTimeline events={timeline} />
-      {/* <ChatWindow /> */}
+      {ENABLE_CHATBOT ? <ChatWindow /> : null}
     </div>
   );
 }
