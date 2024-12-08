@@ -39,28 +39,41 @@ export function TripHeader({
     .filter((expense) => expense.userId === userId)
     .reduce((total, expense) => total + expense.amount, 0);
 
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <div className="col-span-2 flex items-center justify-between gap-2">
-        <div className="flex flex-col">
-          <h3 className="text-4xl font-bold flex gap-2 items-center"><MapPinned />{name}</h3>
-          <h1 className="text-xs flex gap-1 items-center">{roomCode} <span><Clipboard onClick={() => {
-            navigator.clipboard.writeText(roomCode); toast({
-              title: "Copied!",
-              description: "Trip Code Copied.",
-            })
-          }} className='h-4 cursor-pointer' /></span></h1>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {/* Header Section */}
+      <div className="col-span-2 lg:col-span-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="text-3xl sm:text-4xl font-bold flex gap-2 items-center">
+            <MapPinned />
+            {name}
+          </h3>
+          <h1 className="text-sm sm:text-xs flex gap-1 items-center">
+            {roomCode}{' '}
+            <span>
+              <Clipboard
+                onClick={() => {
+                  navigator.clipboard.writeText(roomCode);
+                  toast({
+                    title: 'Copied!',
+                    description: 'Trip Code Copied.',
+                  });
+                }}
+                className="h-4 cursor-pointer"
+              />
+            </span>
+          </h1>
         </div>
-        <InviteDialog
-          tripName={name}
-          roomCode={roomCode}
-        />
+        <InviteDialog tripName={name} roomCode={roomCode} />
       </div>
-      <Card>
+
+      {/* Expense Card */}
+      <Card className="lg:col-span-1">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
+            {/* Total Expense */}
             <div>
               <p className="text-sm font-medium text-muted-foreground flex gap-2 items-center">
                 Total Expenses
@@ -73,15 +86,17 @@ export function TripHeader({
                     </TooltipTrigger>
                     <TooltipContent side="top" className="text-xs max-w-[200px] p-2">
                       <p>
-                        The total amount spent by all participants in this trip,
-                        including all expenses and shared costs.
+                        The total amount spent by all participants in this trip, including
+                        all expenses and shared costs.
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </p>
-              <h2 className="text-3xl font-bold">{formatCurrency(totalExpense)}</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold">{formatCurrency(totalExpense)}</h2>
             </div>
+
+            {/* Per Person */}
             <div className="text-right">
               <p className="text-sm font-medium text-muted-foreground flex gap-2 items-center">
                 Per Person
@@ -101,8 +116,10 @@ export function TripHeader({
                   </Tooltip>
                 </TooltipProvider>
               </p>
-              <p className="text-3xl font-semibold">{formatCurrency(perPerson)}</p>
+              <p className="text-2xl sm:text-3xl font-semibold">{formatCurrency(perPerson)}</p>
             </div>
+
+            {/* User Spending */}
             <div>
               <p className="text-sm font-medium text-muted-foreground flex gap-2 items-center">
                 Your Spending
@@ -122,15 +139,17 @@ export function TripHeader({
                   </Tooltip>
                 </TooltipProvider>
               </p>
-              <h2 className="text-3xl font-bold">{formatCurrency(userSpendings)}</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold">{formatCurrency(userSpendings)}</h2>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      {/* Participants Card */}
+      <Card className="lg:col-span-2">
         <CardContent className="pt-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            {/* Participant Avatars */}
             <div className="flex -space-x-2">
               {participants?.map((participant: any) => (
                 <Avatar
@@ -154,7 +173,9 @@ export function TripHeader({
                 </Avatar>
               ))}
             </div>
-            <div className="flex items-center">
+
+            {/* Participant Count */}
+            <div className="mt-4 sm:mt-0 flex items-center">
               <Users className="w-4 h-4 mr-2" />
               <span className="text-sm font-medium">{participantCount} participants</span>
             </div>

@@ -32,18 +32,25 @@ export default function TripPage() {
 
   useEffect(() => {
     async function tripInit() {
+      console.log("Started")
       if (tripId) {
         try {
+          console.log("getting data...")
           const data = await getTripDetails(tripId as string);
           const timelineData = await getTimeline(tripId as string)
+          console.log(data, timelineData)
           if (data) {
+            console.log("done...")
             setTrip(data);
             setTimeline(timelineData)
+            setLoading(false);
+            console.log(data, timelineData)
           }
         } catch (error) {
           router.push("/invalid")
           console.error('Failed to fetch trip details:', error);
         } finally {
+          console.log("in finally")
           setLoading(false);
         }
       }
